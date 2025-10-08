@@ -1,7 +1,8 @@
 #pragma once
 #include<iostream>
+#include <string>
 #include"Zombie.h"
-
+#include "LocalizationManager.h"
 using namespace std;
 
 #ifndef UNTITLED23_BOSS_H
@@ -9,21 +10,19 @@ using namespace std;
 
 #endif //UNTITLED23_BOSS_H
 
-
-
-
 class Boss : public Zombie {
     int rage;
 public:
-    Boss(const string& n, int h, int d, int r, int sx, int sy)
+    Boss(const std::string& n, int h, int d, int r, int sx, int sy)
             : Zombie(n, h, d, sx, sy), rage(r) {}
 
     void attack(Entity& target) override {
         int totalDamage = getDamage() + rage;
-        cout << "\n[BOSS ATTACK]" << endl;
-        cout << getName() << " in rage! (" << getHealth() << " HP) attacks "
-             << target.getName() << " (" << target.getHealth() << " HP)" << endl;
+        cout << L10N.getString("boss_attack_header") << endl;
+        cout << L10N.getFormattedString("boss_attacks_target", getName(), getHealth(), target.getName(), target.getHealth()) << endl;
         target.takeDamage(totalDamage);
-        cout << target.getName() << " now has " << target.getHealth() << " HP\n";
+        cout << L10N.getFormattedString("target_hp_remaining", target.getName(), target.getHealth()) << "\n";
     }
+
+    char getSymbol() const override { return 'B'; }
 };

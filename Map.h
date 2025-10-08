@@ -1,10 +1,13 @@
 #include<iostream>
 #include<vector>
 #include<cstdlib>
+#include<utility>
+#include<map>
 #include"Entity.h"
 #include "Zombie.h"
 #include "Player.h"
 #include "Boss.h"
+#include "LocalizationManager.h"
 #pragma once
 
 
@@ -13,7 +16,6 @@ using namespace std;
 #define UNTITLED23_MAP_H
 
 #endif //UNTITLED23_MAP_H
-
 
 class Map {
     int width, height;
@@ -30,25 +32,27 @@ public:
             }
         }
     }
-
     const vector<vector<int>>& getGrid() const { return grid; }
 
     void render(const Player& p, const vector<Entity*>& enemies) {
+        map<pair<int, int>, char> enemy_positions;
+        for (auto e : enemies) {
+            if (auto z = dynamic_cast<const Zombie*>(e)) {
+                enemy_positions[{z->getX(), z->getY()}] = e->getSymbol();
+            }
+        }
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                if (x == p.getX() && y == p.getY()) cout << 'P';
-                else {
-                    bool enemyHere = false;
-                    for (auto e : enemies) {
-                        Zombie* z = dynamic_cast<Zombie*>(e);
-                        if (z && z->getX() == x && z->getY() == y) {
-                            if (dynamic_cast<Boss*>(e)) cout << 'B';
-                            else cout << 'Z';
-                            enemyHere = true;
-                            break;
-                        }
+                if (x == p.getX() && y == p.getY()) {
+                    cout << p.getSymbol();
+                } else {
+                    auto it = enemy_positions.find({x, y});
+                    if (it != enemy_positions.end()) {
+                        cout << it->second;
+                    } else {
+                        cout << (grid[y][x] == 1 ? '#' : '.');
                     }
-                    if (!enemyHere) cout << (grid[y][x] == 1 ? '#' : '.');
                 }
             }
             cout << endl;

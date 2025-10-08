@@ -15,4 +15,5 @@ add_executable(untitled23 main.cpp
         Map.h
         Game.h
         Container.h
+        LocalizationManager.h
 )

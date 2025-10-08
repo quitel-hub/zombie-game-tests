@@ -1,11 +1,12 @@
 #pragma once
 #include<iostream>
 #include<vector>
+#include<memory>
 #include"Entity.h"
 #include "Weapon.h"
 #include "Sword.h"
 #include "Gun.h"
-
+#include "LocalizationManager.h"
 using namespace std;
 
 #ifndef UNTITLED23_PLAYER_H
@@ -13,53 +14,54 @@ using namespace std;
 
 #endif //UNTITLED23_PLAYER_H
 
-
-
 class Player : public Entity {
     int score;
     int x, y;
-    Weapon* weapon;
+    unique_ptr<Weapon> weapon;
     bool weaponChosen;
+
 public:
-    Player(const string& n, int h, int d, int sx, int sy)
-            : Entity(n, h, d), weapon(nullptr), score(0), x(sx), y(sy) {}
+    Player(const std::string& n, int h, int d, int sx, int sy)
+            : Entity(n, h, d), weapon(nullptr), score(0), x(sx), y(sy), weaponChosen(false) {}
+
+
+    ~Player() {}
 
     void chooseWeapon(int choice) {
         if (weaponChosen) {
-            cout << "Weapon already chosen: " << weapon->getName() << endl;
+            cout << L10N.getFormattedString("weapon_already_chosen", weapon->getName())  << endl;
             return;
         }
 
-        if (choice == 1) weapon = new Sword();
-        else if (choice == 2) weapon = new Gun();
+
+        if (choice == 1) weapon = make_unique<Sword>();
+        else if (choice == 2) weapon = make_unique<Gun>();
         else {
-            cout << "Invalid choice! Defaulting to Sword." << endl;
-            weapon = new Sword();
+            cout << L10N.getString("invalid_weapon_choice") << endl;
+            weapon = make_unique<Sword>();
         }
 
         weaponChosen = true;
-        cout << name << " equipped " << weapon->getName() << endl;
-    }
-
-    void openInventory() {
-        cout << "Inventory: " << (weapon ? weapon->getName() : "empty") << endl;
+        cout <<L10N.getFormattedString("player_equipped", name, weapon->getName()) << endl;
     }
 
     void attack(Entity& target) override {
-        cout << "\n[PLAYER ATTACK]" << endl;
-        cout << name << " (" << health << " HP) attacks " << target.getName()
-             << " (" << target.getHealth() << " HP)" << endl;
+        cout << L10N.getString("player_attack_header") << endl;
+        cout << L10N.getFormattedString("player_attacks_target", name, health, target.getName(), target.getHealth()) << target.getName() << endl;
 
         if (!weapon) {
-            cout << name << " has no weapon equipped!" << endl;
+            cout << L10N.getFormattedString("player_no_weapon", name) << endl;
             return;
         }
 
         int totalDamage = damage + weapon->getDamage();
-        cout << ">>> Deals " << totalDamage << " damage with " << weapon->getName() << endl;
+        cout << L10N.getFormattedString("player_deals_damage", totalDamage, weapon->getName()) << endl;
         target.takeDamage(totalDamage);
-        cout << target.getName() << " now has " << target.getHealth() << " HP\n";
+        cout <<  L10N.getFormattedString("target_hp_remaining", target.getName(), target.getHealth()) << "\n";
     }
+
+
+    char getSymbol() const override { return 'P'; }
 
     void addScore(int points) { score += points; }
     int getScore() const { return score; }
@@ -74,12 +76,8 @@ public:
                 x = nx;
                 y = ny;
             } else {
-                cout << "Can't move there (wall)." << endl;
+                cout <<  L10N.getString("cant_move_wall") << endl;
             }
         }
-    }
-
-    ~Player() {
-        delete weapon;
     }
 };

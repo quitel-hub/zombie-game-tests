@@ -6,35 +6,48 @@ using namespace std;
 #define UNTITLED23_CONTAINER_H
 
 #endif //UNTITLED23_CONTAINER_H
+
 template<typename T>
 class Container {
-    vector<T*> items;
-public:
-    Container() {}
+    vector<std::unique_ptr<T>> items;
 
-    void add(T* item) {
-        items.push_back(item);
+public:
+    Container() = default;
+
+    Container(const Container&) = delete;
+    Container& operator=(const Container&) = delete;
+
+    Container(Container&&) = default;
+    Container& operator=(Container&&) = default;
+
+    ~Container() = default;
+
+
+    void add(unique_ptr<T> item) {
+        items.push_back(move(item));
     }
 
     T* get(size_t index) const {
-        if (index < items.size()) return items[index];
+        if (index < items.size()) {
+            return items[index].get();
+        }
         return nullptr;
     }
 
-    const vector<T*>& getAll() const { return items; }
+    vector<T*> getAllRaw() const {
+        vector<T*> raw_pointers;
+        raw_pointers.reserve(items.size());
+        for (const auto& ptr : items) {
+            raw_pointers.push_back(ptr.get());
+        }
+        return raw_pointers;
+    }
 
     size_t size() const { return items.size(); }
 
     void remove(size_t index) {
         if (index < items.size()) {
-            delete items[index];
             items.erase(items.begin() + index);
         }
-    }
-
-    ~Container() {
-        for (auto* item : items)
-            delete item;
-        items.clear();
     }
 };

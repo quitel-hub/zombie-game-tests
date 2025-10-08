@@ -9,6 +9,7 @@
 #include "Inventory.h"
 #include "Map.h"
 #include "Container.h"
+#include "LocalizationManager.h"
 
 
 #pragma once
@@ -23,31 +24,27 @@ using namespace std;
 class Game {
     Player player;
     Container<Entity> enemies;
-    Container<Weapon> inventory;
     Map map;
 
 public:
     Game() : player("Player", 100, 20, 1, 1), map(15, 15, 20) {
-        enemies.add(new Zombie("Zombie 1", 50, 10, 5, 5));
-        enemies.add(new Zombie("Zombie 2", 60, 15, 10, 3));
-        enemies.add(new Boss("BOSS", 120, 20, 10, 7, 7));
-
-        inventory.add(new Sword());
-        inventory.add(new Gun());
+        enemies.add(make_unique<Zombie>("Zombie 1", 50, 10, 5, 5));
+        enemies.add(make_unique<Zombie>("Zombie 2", 60, 15, 10, 3));
+        enemies.add(make_unique<Boss>("BOSS", 120, 20, 10, 7, 7));
     }
 
     void run() {
-        cout << "=== GAME START ===" << endl;
-        cout << "Choose weapon:\n1 - Sword\n2 - Gun\n";
+        cout << L10N.getString("game_start") << endl;
+        cout << L10N.getString("choose_weapon");
         int choice; cin >> choice;
         player.chooseWeapon(choice);
 
         while (player.isAlive() && enemies.size() > 0) {
-            cout << "\nHealth: " << player.getHealth() << " | Score: " << player.getScore() << endl;
-            map.render(player, enemies.getAll());
+            cout << L10N.getFormattedString("health_score_hud", player.getHealth(), player.getScore()) << endl;
+            map.render(player, enemies.getAllRaw());
 
-            cout << "\n--- PLAYER TURN ---" << endl;
-            cout << "W/A/S/D to move, F to attack, Q to quit: ";
+            cout << L10N.getString("player_turn_header") << endl;
+            cout << L10N.getString("player_turn_prompt");
             char c; cin >> c; c = tolower(c);
 
             if (c == 'q') break;
@@ -59,37 +56,42 @@ public:
             if (c == 'f') {
                 bool attacked = false;
                 for (size_t i = 0; i < enemies.size(); ++i) {
-                    Zombie* z = dynamic_cast<Zombie*>(enemies.get(i));
+                    Entity* enemy_ptr = enemies.get(i);
+                    Zombie* z = dynamic_cast<Zombie*>(enemy_ptr);
                     if (z) {
                         int dx = abs(z->getX() - player.getX());
                         int dy = abs(z->getY() - player.getY());
-                        if (dx <= 1 && dy <= 1) {
+                        if (dx + dy == 1) {
                             player.attack(*z);
                             attacked = true;
                             if (!z->isAlive()) {
-                                cout << z->getName() << " defeated!" << endl;
+                                cout << L10N.getFormattedString("enemy_defeated", z->getName()) << endl;
                                 player.addScore(50);
                                 enemies.remove(i);
+                                i--;
                             }
                             break;
                         }
                     }
                 }
-                if (!attacked)
-                    cout << "No enemies in range to attack!" << endl;
+                if (!attacked) {
+                    cout << L10N.getString("no_enemy_in_range") << endl;
+                } else {
+                    continue;
+                }
             }
 
             if (player.isAlive()) {
-                cout << "\n--- ENEMY TURN ---" << endl;
-                for (auto* e : enemies.getAll()) {
+                cout << L10N.getString("enemy_turn_header") << endl;
+                for (auto* e : enemies.getAllRaw()) {
                     Zombie* z = dynamic_cast<Zombie*>(e);
                     if (z) {
                         int dx = abs(z->getX() - player.getX());
                         int dy = abs(z->getY() - player.getY());
-                        if (dx <= 1 && dy <= 1) {
+                        if (dx + dy == 1) {
                             z->attack(player);
                             if (!player.isAlive()) {
-                                cout << "Player has fallen!" << endl;
+                                cout << L10N.getString("player_fallen") << endl;
                                 break;
                             }
                         }
@@ -98,8 +100,8 @@ public:
             }
         }
 
-        if (player.isAlive()) cout << "\n=== Victory! All enemies defeated! ===" << endl;
-        else cout << "\n=== Defeat... ===" << endl;
-        cout << "Final score: " << player.getScore() << endl;
+        if (player.isAlive()) cout << L10N.getString("victory") << endl;
+        else cout << L10N.getString("defeat") << endl;
+        cout << L10N.getFormattedString("final_score", player.getScore()) << endl;
     }
 };

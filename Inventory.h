@@ -1,6 +1,7 @@
 #include"Weapon.h"
 #include<iostream>
 #include<vector>
+#include "LocalizationManager.h"
 #pragma once
 using namespace std;
 

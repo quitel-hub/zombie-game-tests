@@ -7,7 +7,6 @@ using namespace std;
 
 #endif //UNTITLED23_WEAPON_H
 
-
 class Weapon {
 protected:
     string name;
