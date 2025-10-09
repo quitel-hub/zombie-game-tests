@@ -1,3 +1,0 @@
-C:/Users/quitel/CLionProjects/Zombie game/cmake-build-debug/CMakeFiles/untitled23.dir
-C:/Users/quitel/CLionProjects/Zombie game/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/quitel/CLionProjects/Zombie game/cmake-build-debug/CMakeFiles/rebuild_cache.dir

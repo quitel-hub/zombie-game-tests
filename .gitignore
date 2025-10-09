@@ -1,0 +1,16 @@
+
+.idea/
+
+cmake-build-debug/
+
+
+*.exe
+*.o
+*.obj
+
+
+*.suo
+*.user
+*.userosscache
+*.sln
+*.swp
