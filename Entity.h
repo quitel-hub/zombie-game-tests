@@ -25,7 +25,6 @@ public:
     virtual char getSymbol() const = 0;
 
     void takeDamage(int dmg) {
-        cout << L10N.getFormattedString("entity_takes_damage", name, dmg) << endl;
         health -= dmg;
         if (health < 0) health = 0;
     }

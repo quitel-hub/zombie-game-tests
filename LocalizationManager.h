@@ -16,7 +16,7 @@ class LocalizationManager {
 private:
     nlohmann::json translations;
 
-    LocalizationManager() {} // Закрытый конструктор
+    LocalizationManager() {}
 
 public:
     LocalizationManager(const LocalizationManager&) = delete;
@@ -56,7 +56,7 @@ public:
         string format_str = getString(key);
 
 
-        vector<std::string> string_args;
+        vector< string> string_args;
         ( (string_args.push_back( (stringstream{} << args).str() )), ...);
 
 

@@ -19,5 +19,26 @@ add_executable(untitled23 main.cpp
         Game.h
         Container.h
         LocalizationManager.h
+        Command.h
+        Game.cpp
 )
 target_link_libraries(untitled23 sfml-graphics sfml-window sfml-system)
+
+
+#Google tests
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+)
+FetchContent_MakeAvailable(googletest)
+
+
+enable_testing()
+
+add_executable(runTests tests/GameLogicTests.cpp
+        tests/GameLogicTests.cpp)
+target_link_libraries(runTests PRIVATE gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(runTests)
