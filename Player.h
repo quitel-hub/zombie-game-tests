@@ -21,6 +21,15 @@ class Player : public Entity {
     bool weaponChosen;
 
 public:
+    void reset(int startX, int startY) {
+        health = 100;
+        score = 0;
+        x = startX;
+        y = startY;
+        weapon.reset();
+        weaponChosen = false;
+    }
+
     Player(const std::string& n, int h, int d, int sx, int sy)
             : Entity(n, h, d), weapon(nullptr), score(0), x(sx), y(sy), weaponChosen(false) {}
 

@@ -26,6 +26,9 @@ public:
     void add(unique_ptr<T> item) {
         items.push_back(move(item));
     }
+    void clear() {
+        items.clear();
+    }
 
     T* get(size_t index) const {
         if (index < items.size()) {
