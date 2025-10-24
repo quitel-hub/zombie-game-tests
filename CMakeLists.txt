@@ -3,8 +3,10 @@ project(untitled23)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(SFML_DIR "C:/Users/quitel/CLionProjects/libs/SFML-2.6.1/lib/cmake/SFML")
+set(SFML_DIR "C:/Users/quitel/CLionProjects/Zombie-game/libs/SFML-2.6.1/lib/cmake/SFML")
 find_package(SFML 2.6.1 COMPONENTS graphics window system REQUIRED)
+
+
 
 add_executable(untitled23 main.cpp
         Entity.h

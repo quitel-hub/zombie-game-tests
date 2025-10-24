@@ -14,3 +14,12 @@ cmake-build-debug/
 *.userosscache
 *.sln
 *.swp
+
+
+libs/SFML-2.6.1/
+
+
+build/
+bin/
+*.lib
+*.dll
