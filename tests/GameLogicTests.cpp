@@ -3,6 +3,7 @@
 #include "../Zombie.h"
 #include "../Boss.h"
 #include "../Map.h"
+#include "../Container.h"
 #include <vector>
 
 // Тест 1: Перевірка правильного розрахунку шкоди for player
@@ -98,4 +99,90 @@ TEST(PlayerLogic, ScoreIncreasesCorrectly) {
     player.addScore(30);
     ASSERT_EQ(player.getScore(), 80);
 }
+// Тест 10: Перевірка коректного переміщення player на порожню клітинку
+TEST(MovementLogic, PlayerMovesToEmptyCell) {
+    Player player("Hero", 100, 20, 1, 1);
+    Map map(5, 5, 0);
 
+    player.move(1, 0, map.getGrid());
+
+    ASSERT_EQ(player.getX(), 2);
+    ASSERT_EQ(player.getY(), 1);
+}
+// Тест 11: Перевірка, що player не може рухатись у стіну
+TEST(MovementLogic, PlayerCannotMoveIntoWall) {
+    Player player("Hero", 100, 20, 1, 1);
+    vector<vector<int>> grid = {
+        {1, 1, 1},
+        {1, 0, 1},
+        {1, 1, 1}
+    };
+
+    player.move(1, 0, grid);
+
+    ASSERT_EQ(player.getX(), 1);
+    ASSERT_EQ(player.getY(), 1);
+}
+
+// Тест 12: Перевірка, що player не може вийти за межі map вліво/вгору
+TEST(MovementLogic, PlayerStaysWithinMapBoundsNegative) {
+    Player player("Hero", 100, 20, 0, 0);
+    Map map(5, 5, 0);
+
+    player.move(-1, 0, map.getGrid());
+    ASSERT_EQ(player.getX(), 0);
+    ASSERT_EQ(player.getY(), 0);
+
+    player.move(0, -1, map.getGrid());
+    ASSERT_EQ(player.getX(), 0);
+    ASSERT_EQ(player.getY(), 0);
+}
+// Тест 13: Перевірка, що player не може вийти за межі map вправо/вниз
+TEST(MovementLogic, PlayerStaysWithinMapBoundsPositive) {
+    Map map(5, 5, 0);
+    Player player("Hero", 100, 20, 4, 4);
+
+    player.move(1, 0, map.getGrid());
+    ASSERT_EQ(player.getX(), 4);
+    ASSERT_EQ(player.getY(), 4);
+
+    player.move(0, 1, map.getGrid());
+    ASSERT_EQ(player.getX(), 4);
+    ASSERT_EQ(player.getY(), 4);
+}
+
+// Тест 14: Перевірка роботи контейнера: додавання та розмір
+TEST(ContainerLogic, AddAndSize) {
+    Container<Entity> container;
+    ASSERT_EQ(container.size(), 0);
+    container.add(make_unique<Zombie>("Z1", 10, 1, 0, 0));
+    ASSERT_EQ(container.size(), 1);
+    container.add(make_unique<Boss>("B1", 100, 10, 5, 0, 0));
+    ASSERT_EQ(container.size(), 2);
+}
+
+// Тест 15: Перевірка роботи контейнера: отримання та видалення
+TEST(ContainerLogic, GetAndRemove) {
+    Container<Entity> container;
+    container.add(make_unique<Zombie>("Z1", 10, 1, 0, 0));
+    container.add(make_unique<Boss>("B1", 100, 10, 5, 0, 0));
+
+
+    Entity* first = container.get(0);
+    ASSERT_NE(first, nullptr);
+    ASSERT_EQ(first->getName(), "Z1");
+
+    Entity* second = container.get(1);
+    ASSERT_NE(second, nullptr);
+    ASSERT_EQ(second->getName(), "B1");
+
+    Entity* outOfBounds = container.get(2);
+    ASSERT_EQ(outOfBounds, nullptr);
+
+
+    container.remove(0);
+    ASSERT_EQ(container.size(), 1);
+    Entity* nowFirst = container.get(0);
+    ASSERT_NE(nowFirst, nullptr);
+    ASSERT_EQ(nowFirst->getName(), "B1");
+}
