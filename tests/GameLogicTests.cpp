@@ -186,3 +186,34 @@ TEST(ContainerLogic, GetAndRemove) {
     ASSERT_NE(nowFirst, nullptr);
     ASSERT_EQ(nowFirst->getName(), "B1");
 }
+
+// Тест 16: Гравець намагається атакувати без зброї
+TEST(CombatLogic, PlayerAttacksWithoutWeapon) {
+    Player player("Hero", 100, 20, 1, 1);
+    Zombie zombie("Target", 80, 10, 1, 2);
+    int initialZombieHealth = zombie.getHealth();
+
+
+    testing::internal::CaptureStdout();
+    player.attack(zombie);
+    std::string output = testing::internal::GetCapturedStdout();
+
+    // Assert
+    ASSERT_EQ(zombie.getHealth(), initialZombieHealth);
+    ASSERT_NE(output.find("has no weapon equipped"), std::string::npos);
+}
+
+// Тест 17: Перевірка, що здоров'я не зменшується після атаки мертвого зомбі
+TEST(CombatLogic, DeadZombieCannotAttack) {
+    Player player("Hero", 100, 10, 1, 1);
+    Zombie zombie("Walker", 0, 10, 1, 2);
+    zombie.takeDamage(1);
+    ASSERT_FALSE(zombie.isAlive());
+    int initialPlayerHealth = player.getHealth();
+
+
+    zombie.attack(player);
+
+    // Assert
+    ASSERT_EQ(player.getHealth(), initialPlayerHealth);
+}

@@ -24,9 +24,8 @@ public:
 
 
     void clear() {
-        items.clear(); // Викликаємо clear() для вектора.
-        // Це автоматично викличе деструктори для всіх unique_ptr,
-        // звільняючи пам'ять.
+        items.clear();
+
     }
 
     void add(unique_ptr<T> item) {
