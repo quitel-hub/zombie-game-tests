@@ -248,3 +248,27 @@ TEST(ContainerLogic, GetFromEmptyContainer) {
     Container<Entity> container;
     ASSERT_EQ(container.get(0), nullptr);
 }
+
+// Тест 20: Перевірка завантаження відсутнього файлу локалізації
+TEST(LocalizationManager, LoadMissingFile) {
+    LocalizationManager& lm = LocalizationManager::getInstance();
+
+    // Act
+    bool result = lm.loadLanguage("non_existent_language_code");
+
+    // Assert
+    ASSERT_FALSE(result);
+
+}
+
+// Тест 21: Перевірка отримання відсутнього ключа локалізації
+TEST(LocalizationManager, GetMissingKey) {
+    LocalizationManager& lm = LocalizationManager::getInstance();
+    lm.loadLanguage("en");
+
+    // Act
+    std::string result = lm.getString("this_key_does_not_exist");
+
+    // Assert
+    ASSERT_EQ(result, "!!this_key_does_not_exist!!");
+}
