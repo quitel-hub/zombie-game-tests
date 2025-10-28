@@ -23,6 +23,12 @@ public:
     ~Container() = default;
 
 
+    void clear() {
+        items.clear(); // Викликаємо clear() для вектора.
+        // Це автоматично викличе деструктори для всіх unique_ptr,
+        // звільняючи пам'ять.
+    }
+
     void add(unique_ptr<T> item) {
         items.push_back(move(item));
     }
