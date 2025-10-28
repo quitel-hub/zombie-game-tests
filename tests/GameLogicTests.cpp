@@ -272,3 +272,27 @@ TEST(LocalizationManager, GetMissingKey) {
     // Assert
     ASSERT_EQ(result, "!!this_key_does_not_exist!!");
 }
+
+// Тест 22: Перевірка завантаження пошкодженого JSON файлу
+TEST(LocalizationManager, LoadMalformedJsonFile) {
+    LocalizationManager& lm = LocalizationManager::getInstance();
+    const char* filename = "malformed_test.json";
+
+    // Створюємо тимчасовий пошкоджений JSON файл
+    {
+        std::ofstream tempFile(filename);
+        tempFile << "{ \"key\": \"value\", ";
+    }
+
+    // Act
+    testing::internal::CaptureStderr();
+    bool result = lm.loadLanguage("malformed_test");
+    std::string output = testing::internal::GetCapturedStderr();
+
+    // Assert
+    ASSERT_FALSE(result);
+    ASSERT_NE(output.find("Error parsing JSON"), std::string::npos);
+
+
+    std::remove(filename);
+}
