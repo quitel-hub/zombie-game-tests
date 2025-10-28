@@ -217,3 +217,34 @@ TEST(CombatLogic, DeadZombieCannotAttack) {
     // Assert
     ASSERT_EQ(player.getHealth(), initialPlayerHealth);
 }
+
+// Тест 17: Спроба видалити елемент з порожнього контейнера
+TEST(ContainerLogic, RemoveFromEmptyContainer) {
+    Container<Entity> container;
+    ASSERT_EQ(container.size(), 0);
+
+    // Act & Assert
+    ASSERT_NO_THROW(container.remove(0));
+    ASSERT_EQ(container.size(), 0);
+}
+
+// Тест 18: Спроба видалити елемент за невірним індексом
+TEST(ContainerLogic, RemoveInvalidIndex) {
+    Container<Entity> container;
+    container.add(std::make_unique<Zombie>());
+    ASSERT_EQ(container.size(), 1);
+
+
+    ASSERT_NO_THROW(container.remove(1));
+    ASSERT_EQ(container.size(), 1);
+
+
+    ASSERT_NO_THROW(container.remove(-1));
+    ASSERT_EQ(container.size(), 1);
+}
+
+// Тест 19: Спроба отримати елемент з порожнього контейнера
+TEST(ContainerLogic, GetFromEmptyContainer) {
+    Container<Entity> container;
+    ASSERT_EQ(container.get(0), nullptr);
+}
