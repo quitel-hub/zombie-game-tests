@@ -23,6 +23,11 @@ public:
     ~Container() = default;
 
 
+    void clear() {
+        items.clear();
+
+    }
+
     void add(unique_ptr<T> item) {
         items.push_back(move(item));
     }

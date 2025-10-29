@@ -27,6 +27,14 @@ public:
 
     ~Player() {}
 
+    void reset(int startX, int startY) {
+        health = 100; // Початкове здоров'я
+        score = 0;    // Початковий рахунок
+        x = startX;   // Початкова позиція X
+        y = startY;   // Початкова позиція Y
+        weapon.reset(); // Видалити поточну зброю (unique_ptr має метод reset)
+        weaponChosen = false;
+    }
     void chooseWeapon(int choice) {
         if (weaponChosen) {
             cout << L10N.getFormattedString("weapon_already_chosen", weapon->getName())  << endl;
