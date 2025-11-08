@@ -1,4 +1,4 @@
-﻿# Zombie-game
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1e6aaa56-d059-4f0b-9d40-3b9de9d781ce" />﻿# Zombie-game
 # 2D Zombie Game (Лабораторні роботи з С++)
 
 Це навчальний проєкт, розроблений у рамках університетського курсу з програмування. Проєкт являє собою простий 2D-шутер з видом зверху, реалізований на C++ з використанням бібліотеки **SFML**.
@@ -93,3 +93,6 @@
 Повна, автоматично згенерована документація коду доступна за посиланням нижче. Вона оновлюється після кожного коміту в основну гілку.
 
 https://quitel-hub.github.io/zombie-game-tests/index.html
+
+лінк на звіт https://docs.google.com/document/d/1l9Tk6m8J5BB61gVjx5jy_GbcesXdLQRNW45NY0BQDe8/edit?tab=t.0
+
